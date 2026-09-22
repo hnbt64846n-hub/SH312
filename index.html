@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>아이랑 나가요 - 외출 준비물 체크리스트</title>
+<meta name="description" content="영유아 자녀와 외출 시 상황에 맞는 준비물 체크리스트를 자동 생성하는 PWA" />
+<meta name="theme-color" content="#3a7d7b" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="아이랑 나가요" />
+<style>
+  /* ===== 색상 변수: 라이트/다크 모드 ===== */
+  :root{
+    --bg:#f6f7f5; --card:#ffffff; --text:#1c2321; --muted:#5c6b66;
+    --primary:#3a7d7b; --primary-dark:#2c5f5d; --accent:#e8956b;
+    --border:#e1e6e3; --danger:#d1495b; --ok:#3a7d7b;
+    --chip-bg:#eef4f3; --shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#14181a; --card:#1e2426; --text:#eef1ef; --muted:#9fb0ab;
+      --primary:#4fb3ae; --primary-dark:#3a8f8b; --accent:#f0a877;
+      --border:#2c3436; --danger:#e2697a; --ok:#4fb3ae;
+      --chip-bg:#233332; --shadow: 0 2px 12px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",Roboto,sans-serif;
+    line-height:1.5; padding-bottom:60px;
+  }
+  header.top{
+    position:sticky; top:0; z-index:10;
+    background:var(--primary); color:#fff;
+    padding:14px 16px; box-shadow:var(--shadow);
+  }
+  header.top h1{margin:0; font-size:1.2rem}
+  header.top p{margin:2px 0 0; font-size:.8rem; opacity:.9}
+  main{max-width:640px; margin:0 auto; padding:16px}
+  section{
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:16px; margin-bottom:16px; box-shadow:var(--shadow);
+  }
+  section > h2{margin:0 0 12px; font-size:1.05rem; display:flex; align-items:center; gap:6px}
+  label{display:block; font-size:.85rem; color:var(--muted); margin-bottom:4px; font-weight:600}
+  .field{margin-bottom:14px}
+  select, input[type="text"], input[type="datetime-local"], input[type="number"]{
+    width:100%; padding:12px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg); color:var(--text); font-size:1rem; min-height:44px;
+  }
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .checkline{
+    display:flex; align-items:center; gap:10px; padding:10px 0; font-size:.95rem;
+  }
+  .checkline input[type="checkbox"]{width:22px; height:22px; flex-shrink:0}
+  button{
+    cursor:pointer; border:none; border-radius:10px; font-size:1rem; font-weight:700;
+    min-height:44px; padding:10px 16px; transition:opacity .15s;
+  }
+  button:active{opacity:.75}
+  .btn-primary{background:var(--primary); color:#fff; width:100%}
+  .btn-secondary{background:var(--chip-bg); color:var(--text)}
+  .btn-danger{background:transparent; color:var(--danger); border:1px solid var(--danger)}
+  .btn-small{padding:6px 10px; font-size:.85rem; min-height:36px; border-radius:8px}
+  .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .row.between{justify-content:space-between}
+
+  /* 진행률 */
+  .progress-wrap{margin-bottom:10px}
+  .progress-bar{background:var(--border); border-radius:20px; height:14px; overflow:hidden}
+  .progress-fill{background:var(--ok); height:100%; width:0%; transition:width .25s}
+  .progress-text{font-size:.85rem; color:var(--muted); margin-top:6px; text-align:right}
+
+  /* 카테고리 그룹 */
+  .cat-group{margin-bottom:14px}
+  .cat-title{
+    font-size:.8rem; font-weight:800; color:var(--primary-dark);
+    background:var(--chip-bg); display:inline-block; padding:4px 10px;
+    border-radius:20px; margin-bottom:8px;
+  }
+  .item{
+    display:flex; align-items:center; gap:8px; padding:10px 6px;
+    border-bottom:1px solid var(--border);
+  }
+  .item:last-child{border-bottom:none}
+  .item.checked .item-name{ text-decoration:line-through; color:var(--muted); }
+  .item-name{flex:1; font-size:.95rem; word-break:keep-all}
+  .qty-ctrl{display:flex; align-items:center; gap:6px}
+  .qty-ctrl button{width:32px; height:32px; min-height:32px; padding:0; border-radius:8px; background:var(--chip-bg); color:var(--text); font-size:1.1rem}
+  .qty-num{min-width:20px; text-align:center; font-weight:700; font-size:.9rem}
+  .item-del{background:transparent; color:var(--muted); font-size:1.1rem; padding:4px 8px; min-height:auto}
+
+  .empty-hint{color:var(--muted); font-size:.9rem; text-align:center; padding:20px 0}
+
+  .tpl-list{display:flex; flex-direction:column; gap:8px; margin-top:10px}
+  .tpl-item{
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--chip-bg); padding:8px 10px; border-radius:10px; font-size:.9rem;
+  }
+
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+    background:var(--text); color:var(--bg); padding:10px 18px; border-radius:30px;
+    font-size:.9rem; opacity:0; pointer-events:none; transition:opacity .25s, bottom .25s;
+    z-index:999; max-width:90%; text-align:center;
+  }
+  .toast.show{opacity:1; bottom:36px}
+
+  .hint{font-size:.78rem; color:var(--muted); margin-top:6px}
+  footer.info{text-align:center; color:var(--muted); font-size:.78rem; padding:20px 0}
+  a{color:var(--primary-dark)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>🧸 아이랑 나가요</h1>
+  <p>상황에 맞는 외출 준비물, 자동으로 챙겨드려요</p>
+</header>
+
+<main>
+
+  <!-- 1) 맥락 입력 폼 -->
+  <section id="form-section">
+    <h2>📋 오늘 외출 정보</h2>
+    <div class="field">
+      <label for="outingType">외출 유형</label>
+      <select id="outingType">
+        <option value="short">짧은 외출</option>
+        <option value="park">공원</option>
+        <option value="water">물놀이</option>
+        <option value="camping">캠핑</option>
+        <option value="trip">2~3일 여행</option>
+        <option value="home">본가 방문</option>
+      </select>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="ageGroup">아이 연령</label>
+        <select id="ageGroup">
+          <option value="newborn">신생아</option>
+          <option value="infant">영아</option>
+          <option value="toddler">유아</option>
+          <option value="kid">유치</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="season">계절</label>
+        <select id="season">
+          <option value="spring">봄</option>
+          <option value="summer">여름</option>
+          <option value="fall">가을</option>
+          <option value="winter">겨울</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="weather">날씨</label>
+        <select id="weather">
+          <option value="none">선택안함</option>
+          <option value="hot">덥다</option>
+          <option value="cold">춥다</option>
+          <option value="rain">비</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="transport">이동수단</label>
+        <select id="transport">
+          <option value="car">차</option>
+          <option value="public">대중교통</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="departAt">출발 일시</label>
+      <input type="datetime-local" id="departAt" />
+      <p class="hint">출발 30분 전 알림을 예약할 수 있어요 (브라우저를 켜둔 상태 또는 홈 화면 설치 앱 기준)</p>
+    </div>
+    <div class="field">
+      <label class="checkline"><input type="checkbox" id="stay" /> 숙박 여부</label>
+      <label class="checkline"><input type="checkbox" id="allergy" /> 알레르기 고려</label>
+      <label class="checkline"><input type="checkbox" id="medicine" /> 약 복용</label>
+    </div>
+    <button class="btn-primary" id="generateBtn">✅ 체크리스트 생성하기</button>
+  </section>
+
+  <!-- 2) 진행률 + 체크리스트 -->
+  <section id="list-section" style="display:none">
+    <h2>🎒 준비물 체크리스트</h2>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0 / 0 완료</div>
+    </div>
+    <div id="checklistArea"></div>
+
+    <div class="row" style="margin-top:12px">
+      <input type="text" id="customItemInput" placeholder="개인 항목 추가 (예: 좋아하는 인형)" style="flex:1" />
+      <button class="btn-secondary" id="addCustomBtn">추가</button>
+    </div>
+  </section>
+
+  <!-- 3) 템플릿 -->
+  <section id="template-section" style="display:none">
+    <h2>💾 템플릿</h2>
+    <div class="row">
+      <input type="text" id="templateNameInput" placeholder="템플릿 이름 (예: 주말 공원 나들이)" style="flex:1" />
+      <button class="btn-secondary" id="saveTemplateBtn">현재 리스트 저장</button>
+    </div>
+    <div class="tpl-list" id="templateList"></div>
+  </section>
+
+  <!-- 4) 공유 -->
+  <section id="share-section" style="display:none">
+    <h2>🔗 공유</h2>
+    <p class="hint">현재 체크리스트를 링크로 만들어 배우자/보호자와 공유하세요. 링크를 열면 자동으로 복원됩니다.</p>
+    <button class="btn-secondary" id="shareBtn" style="width:100%">공유 링크 복사하기</button>
+  </section>
+
+  <!-- 5) 알림 -->
+  <section id="notify-section" style="display:none">
+    <h2>🔔 출발 알림</h2>
+    <p class="hint" id="notifyStatus">알림을 받으려면 권한을 허용해주세요.</p>
+    <button class="btn-secondary" id="notifyBtn" style="width:100%">출발 30분 전 알림 켜기</button>
+    <p class="hint">📱 iOS(아이폰)에서는 Safari로 접속 후 "홈 화면에 추가"로 설치한 앱에서 실행해야 알림이 안정적으로 동작합니다.</p>
+  </section>
+
+  <footer class="info">
+    오프라인에서도 한 번 접속 후에는 화면 조회 및 체크가 가능합니다. · PWA 지원
+  </footer>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   아이랑 나가요 - 단일 HTML MVP
+   외부 라이브러리 없이 순수 JS로 구현
+========================================================= */
+
+// ---------- 규칙 데이터 ----------
+// 카테고리: 기본/수유/식사/의류/케어/위생/야외/물놀이/캠핑/이동/의약품/개인/기타
+const CATEGORY_ORDER = ["기본","수유","식사","의류","케어","위생","야외","물놀이","캠핑","이동","의약품","개인","기타"];
+
+// 기본템(고정 슬롯) - 항상 포함
+const BASE_ITEMS = [
+  { name:"기저귀", category:"기본", qty:4 },
+  { name:"물티슈", category:"기본", qty:1 },
+  { name:"지퍼백/쓰레기봉투", category:"기본", qty:2 },
+  { name:"물/수분보충", category:"식사", qty:1 },
+  { name:"손소독제", category:"위생", qty:1 },
+];
+
+// 연령별 상황템
+const AGE_ITEMS = {
+  newborn: [
+    { name:"수유용품(모유/분유)", category:"수유", qty:1 },
+    { name:"속싸개", category:"의류", qty:1 },
+  ],
+  infant: [
+    { name:"보온보틀/분유케이스", category:"수유", qty:1 },
+  ],
+  toddler: [
+    { name:"간식", category:"식사", qty:1 },
+    { name:"여벌 옷", category:"의류", qty:1 },
+  ],
+  kid: [
+    { name:"간식", category:"식사", qty:1 },
+    { name:"교체용 마스크", category:"위생", qty:2 },
+  ],
+};
+
+// 계절별 상황템
+const SEASON_ITEMS = {
+  spring: [],
+  summer: [
+    { name:"선크림", category:"케어", qty:1 },
+    { name:"모자", category:"의류", qty:1 },
+  ],
+  fall: [],
+  winter: [
+    { name:"방한모/장갑", category:"의류", qty:1 },
+    { name:"핫팩", category:"케어", qty:2 },
+  ],
+};
+
+// 날씨별 상황템
+const WEATHER_ITEMS = {
+  none: [],
+  hot: [ { name:"냉감 타월", category:"케어", qty:1 } ],
+  cold: [ { name:"보온 담요", category:"케어", qty:1 } ],
+  rain: [
+    { name:"우비/우산", category:"야외", qty:1 },
+    { name:"방수포", category:"야외", qty:1 },
+  ],
+};
+
+// 외출유형별 상황템
+const OUTING_ITEMS = {
+  short: [ { name:"간단 간식", category:"식사", qty:1 } ],
+  park: [ { name:"돗자리", category:"야외", qty:1 } ],
+  water: [
+    { name:"수영복/래시가드", category:"물놀이", qty:1 },
+    { name:"타월", category:"물놀이", qty:2 },
+  ],
+  camping: [
+    { name:"랜턴", category:"캠핑", qty:1 },
+    { name:"버너/연료", category:"캠핑", qty:1 },
+  ],
+  trip: [
+    { name:"여벌 옷(일수만큼)", category:"의류", qty:3 },
+    { name:"치약/칫솔", category:"위생", qty:1 },
+  ],
+  home: [ { name:"아이 장난감/책", category:"개인", qty:1 } ],
+};
+
+// 이동수단별 상황템
+const TRANSPORT_ITEMS = {
+  car: [ { name:"카시트 점검", category:"이동", qty:1 } ],
+  public: [ { name:"유모차/슬링", category:"이동", qty:1 } ],
+};
+
+// 옵션(숙박/알레르기/약)
+function optionItems(ctx){
+  const list = [];
+  if(ctx.stay) list.push({ name:"속옷/잠옷", category:"의류", qty:1 });
+  if(ctx.allergy) list.push({ name:"대체 식품", category:"식사", qty:1 });
+  if(ctx.medicine) list.push({ name:"복용약/처방전", category:"의약품", qty:1 });
+  return list;
+}
+
+// ---------- 체크리스트 생성 로직 ----------
+// 우선순위: 기본템 → 연령 → 계절 → 날씨 → 외출유형 → 이동수단 → 숙박/알레르기/약
+// 이름 기준 중복 제거(먼저 나온 항목의 카테고리를 우선)
+function generateChecklist(ctx){
+  const layers = [
+    BASE_ITEMS,
+    AGE_ITEMS[ctx.ageGroup] || [],
+    SEASON_ITEMS[ctx.season] || [],
+    WEATHER_ITEMS[ctx.weather] || [],
+    OUTING_ITEMS[ctx.outingType] || [],
+    TRANSPORT_ITEMS[ctx.transport] || [],
+    optionItems(ctx),
+  ];
+  const seen = new Map(); // name -> item
+  layers.flat().forEach(rule=>{
+    if(!seen.has(rule.name)){
+      seen.set(rule.name, {
+        id: "r_" + rule.name.replace(/[^\w가-힣]/g,"_"),
+        name: rule.name,
+        category: rule.category,
+        qty: rule.qty,
+        checked: false,
+        source: "rule",
+      });
+    }
+  });
+  return Array.from(seen.values());
+}
+
+// ---------- 전역 상태 ----------
+let state = {
+  context: null,   // 마지막 생성한 맥락
+  items: [],        // 현재 체크리스트 아이템 배열
+};
+
+const $ = (sel)=>document.querySelector(sel);
+
+function readContextFromForm(){
+  return {
+    outingType: $("#outingType").value,
+    ageGroup: $("#ageGroup").value,
+    season: $("#season").value,
+    weather: $("#weather").value,
+    transport: $("#transport").value,
+    stay: $("#stay").checked,
+    allergy: $("#allergy").checked,
+    medicine: $("#medicine").checked,
+    departAt: $("#departAt").value,
+  };
+}
+
+function applyContextToForm(ctx){
+  if(!ctx) return;
+  $("#outingType").value = ctx.outingType || "short";
+  $("#ageGroup").value = ctx.ageGroup || "newborn";
+  $("#season").value = ctx.season || "spring";
+  $("#weather").value = ctx.weather || "none";
+  $("#transport").value = ctx.transport || "car";
+  $("#stay").checked = !!ctx.stay;
+  $("#allergy").checked = !!ctx.allergy;
+  $("#medicine").checked = !!ctx.medicine;
+  $("#departAt").value = ctx.departAt || "";
+}
+
+// 새 규칙 리스트 생성 시, 기존 체크 상태/수량 및 개인항목은 이름 기준으로 최대한 보존
+function regenerate(){
+  const ctx = readContextFromForm();
+  state.context = ctx;
+
+  const prevByName = new Map(state.items.map(it=>[it.name, it]));
+  const customItems = state.items.filter(it=>it.source === "custom");
+
+  const ruleItems = generateChecklist(ctx).map(it=>{
+    const prev = prevByName.get(it.name);
+    if(prev){ return { ...it, checked: prev.checked, qty: prev.qty }; }
+    return it;
+  });
+
+  // 개인항목은 그대로 유지 (이름 중복이면 규칙항목 우선 유지, 개인항목 스킵)
+  const ruleNames = new Set(ruleItems.map(i=>i.name));
+  const keptCustom = customItems.filter(c=>!ruleNames.has(c.name));
+
+  state.items = [...ruleItems, ...keptCustom];
+  render();
+  showSections(true);
+  saveDraft();
+  toast("체크리스트가 생성되었습니다");
+}
+
+// ---------- 렌더링 ----------
+function render(){
+  renderProgress();
+  renderChecklist();
+}
+
+function renderProgress(){
+  const total = state.items.length;
+  const done = state.items.filter(i=>i.checked).length;
+  const pct = total === 0 ? 0 : Math.round((done/total)*100);
+  $("#progressFill").style.width = pct + "%";
+  $("#progressText").textContent = `${done} / ${total} 완료`;
+}
+
+function renderChecklist(){
+  const area = $("#checklistArea");
+  area.innerHTML = "";
+
+  if(state.items.length === 0){
+    area.innerHTML = '<p class="empty-hint">위 정보를 입력하고 체크리스트를 생성해보세요</p>';
+    return;
+  }
+
+  CATEGORY_ORDER.forEach(cat=>{
+    const items = state.items.filter(i=>i.category === cat);
+    if(items.length === 0) return;
+
+    const group = document.createElement("div");
+    group.className = "cat-group";
+    const title = document.createElement("div");
+    title.className = "cat-title";
+    title.textContent = cat;
+    group.appendChild(title);
+
+    items.forEach(item=>{
+      group.appendChild(renderItemRow(item));
+    });
+    area.appendChild(group);
+  });
+}
+
+function renderItemRow(item){
+  const row = document.createElement("div");
+  row.className = "item" + (item.checked ? " checked" : "");
+
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  cb.checked = item.checked;
+  cb.addEventListener("change", ()=>{
+    item.checked = cb.checked;
+    row.classList.toggle("checked", item.checked);
+    renderProgress();
+    saveDraft();
+  });
+
+  const name = document.createElement("span");
+  name.className = "item-name";
+  name.textContent = item.name;
+
+  const qtyCtrl = document.createElement("div");
+  qtyCtrl.className = "qty-ctrl";
+  const minus = document.createElement("button");
+  minus.textContent = "−";
+  minus.setAttribute("aria-label", item.name + " 수량 줄이기");
+  minus.addEventListener("click", ()=>{
+    item.qty = Math.max(0, item.qty - 1);
+    qtyNum.textContent = item.qty;
+    saveDraft();
+  });
+  const qtyNum = document.createElement("span");
+  qtyNum.className = "qty-num";
+  qtyNum.textContent = item.qty;
+  const plus = document.createElement("button");
+  plus.textContent = "+";
+  plus.setAttribute("aria-label", item.name + " 수량 늘리기");
+  plus.addEventListener("click", ()=>{
+    item.qty += 1;
+    qtyNum.textContent = item.qty;
+    saveDraft();
+  });
+  qtyCtrl.append(minus, qtyNum, plus);
+
+  const del = document.createElement("button");
+  del.className = "item-del";
+  del.textContent = "✕";
+  del.setAttribute("aria-label", item.name + " 삭제");
+  del.addEventListener("click", ()=>{
+    state.items = state.items.filter(i=>i.id !== item.id);
+    render();
+    saveDraft();
+  });
+
+  row.append(cb, name, qtyCtrl, del);
+  return row;
+}
+
+function showSections(show){
+  ["list-section","template-section","share-section","notify-section"].forEach(id=>{
+    $("#" + id).style.display = show ? "block" : "none";
+  });
+}
+
+// ---------- 개인 항목 추가 ----------
+$("#addCustomBtn").addEventListener("click", addCustomItem);
+$("#customItemInput").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") addCustomItem();
+});
+function addCustomItem(){
+  const input = $("#customItemInput");
+  const name = input.value.trim();
+  if(!name) return;
+  if(state.items.some(i=>i.name === name)){
+    toast("이미 목록에 있는 항목이에요");
+    return;
+  }
+  state.items.push({
+    id: "c_" + Date.now(),
+    name, category:"개인", qty:1, checked:false, source:"custom",
+  });
+  input.value = "";
+  render();
+  saveDraft();
+}
+
+// ---------- 템플릿 (localStorage) ----------
+const TPL_KEY = "aigo_templates_v1";
+const DRAFT_KEY = "aigo_draft_v1";
+
+function loadTemplates(){
+  try{ return JSON.parse(localStorage.getItem(TPL_KEY) || "{}"); }
+  catch(e){ return {}; }
+}
+function saveTemplates(tpls){
+  localStorage.setItem(TPL_KEY, JSON.stringify(tpls));
+}
+function renderTemplateList(){
+  const wrap = $("#templateList");
+  wrap.innerHTML = "";
+  const tpls = loadTemplates();
+  const names = Object.keys(tpls);
+  if(names.length === 0){
+    wrap.innerHTML = '<p class="empty-hint">저장된 템플릿이 없습니다</p>';
+    return;
+  }
+  names.forEach(name=>{
+    const row = document.createElement("div");
+    row.className = "tpl-item";
+    const label = document.createElement("span");
+    label.textContent = name;
+    const btns = document.createElement("div");
+    btns.className = "row";
+    const loadBtn = document.createElement("button");
+    loadBtn.className = "btn-secondary btn-small";
+    loadBtn.textContent = "불러오기";
+    loadBtn.addEventListener("click", ()=>{
+      const data = loadTemplates()[name];
+      if(!data) return;
+      state.context = data.context;
+      state.items = data.items;
+      applyContextToForm(data.context);
+      render();
+      showSections(true);
+      saveDraft();
+      toast(`"${name}" 템플릿을 불러왔습니다`);
+    });
+    const delBtn = document.createElement("button");
+    delBtn.className = "btn-danger btn-small";
+    delBtn.textContent = "삭제";
+    delBtn.addEventListener("click", ()=>{
+      const tpls2 = loadTemplates();
+      delete tpls2[name];
+      saveTemplates(tpls2);
+      renderTemplateList();
+      toast(`"${name}" 템플릿을 삭제했습니다`);
+    });
+    btns.append(loadBtn, delBtn);
+    row.append(label, btns);
+    wrap.appendChild(row);
+  });
+}
+
+$("#saveTemplateBtn").addEventListener("click", ()=>{
+  const nameInput = $("#templateNameInput");
+  const name = nameInput.value.trim();
+  if(!name){ toast("템플릿 이름을 입력해주세요"); return; }
+  if(state.items.length === 0){ toast("먼저 체크리스트를 생성해주세요"); return; }
+  const tpls = loadTemplates();
+  tpls[name] = { context: state.context, items: state.items };
+  saveTemplates(tpls);
+  nameInput.value = "";
+  renderTemplateList();
+  toast(`"${name}" 이름으로 저장했습니다`);
+});
+
+// 임시 저장(초안): 새로고침해도 진행상황 유지
+function saveDraft(){
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(state));
+}
+function loadDraft(){
+  try{
+    const data = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    if(data && data.items){
+      state = data;
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+// ---------- 공유 (URL 해시 base64 JSON) ----------
+function encodeStateToHash(){
+  const json = JSON.stringify(state);
+  // 한글(UTF-8) 안전 base64 인코딩
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  return b64;
+}
+function decodeStateFromHash(hash){
+  try{
+    const b64 = hash.replace(/^#?s=/, "");
+    const json = decodeURIComponent(escape(atob(b64)));
+    return JSON.parse(json);
+  }catch(e){ return null; }
+}
+
+$("#shareBtn").addEventListener("click", async ()=>{
+  if(state.items.length === 0){ toast("먼저 체크리스트를 생성해주세요"); return; }
+  const b64 = encodeStateToHash();
+  const url = location.origin + location.pathname + "#s=" + b64;
+  try{
+    await navigator.clipboard.writeText(url);
+    toast("공유 링크가 복사되었습니다");
+  }catch(e){
+    // 클립보드 API 실패 시 프롬프트로 대체
+    prompt("아래 링크를 복사하세요", url);
+  }
+});
+
+function tryRestoreFromHash(){
+  if(location.hash && location.hash.startsWith("#s=")){
+    const data = decodeStateFromHash(location.hash);
+    if(data && data.items){
+      state = data;
+      applyContextToForm(data.context);
+      render();
+      showSections(true);
+      saveDraft();
+      toast("공유된 체크리스트를 불러왔습니다");
+      return true;
+    }
+  }
+  return false;
+}
+
+// ---------- 알림 (출발 30분 전) ----------
+let notifyTimerId = null;
+
+function updateNotifyStatus(){
+  const status = $("#notifyStatus");
+  if(!("Notification" in window)){
+    status.textContent = "이 브라우저는 알림을 지원하지 않습니다.";
+    return;
+  }
+  if(Notification.permission === "granted"){
+    status.textContent = "알림 권한이 허용되어 있습니다. 출발일시를 입력하면 예약됩니다.";
+  }else if(Notification.permission === "denied"){
+    status.textContent = "알림 권한이 차단되어 있습니다. 브라우저 설정에서 허용해주세요.";
+  }else{
+    status.textContent = "알림을 받으려면 권한을 허용해주세요.";
+  }
+}
+
+$("#notifyBtn").addEventListener("click", async ()=>{
+  if(!("Notification" in window)){
+    toast("이 브라우저는 알림을 지원하지 않습니다");
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  updateNotifyStatus();
+  if(perm === "granted"){
+    scheduleDepartureNotification();
+    toast("알림이 예약되었습니다");
+  }
+});
+
+function scheduleDepartureNotification(){
+  if(notifyTimerId){ clearTimeout(notifyTimerId); notifyTimerId = null; }
+  const departAt = $("#departAt").value;
+  if(!departAt || Notification.permission !== "granted") return;
+
+  const departTime = new Date(departAt).getTime();
+  const notifyTime = departTime - 30 * 60 * 1000;
+  const delay = notifyTime - Date.now();
+
+  if(delay <= 0){
+    // 이미 지난 시간이면 예약하지 않음
+    return;
+  }
+  // 브라우저(또는 설치된 앱)가 켜져 있는 동안 유효
+  notifyTimerId = setTimeout(()=>{
+    new Notification("아이랑 나가요 - 출발 30분 전!", {
+      body: "준비물을 다시 확인하세요 🧸",
+      icon: "icons/icon-192.png",
+    });
+  }, delay);
+}
+
+// ---------- 토스트 ----------
+let toastTimer = null;
+function toast(msg){
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 2200);
+}
+
+// ---------- 이벤트 바인딩 ----------
+$("#generateBtn").addEventListener("click", regenerate);
+$("#departAt").addEventListener("change", ()=>{
+  if(Notification && Notification.permission === "granted"){
+    scheduleDepartureNotification();
+  }
+});
+
+// ---------- 초기화 ----------
+function init(){
+  updateNotifyStatus();
+  renderTemplateList();
+
+  // 우선순위: 공유링크 > 이전 초안
+  const restoredFromShare = tryRestoreFromHash();
+  if(!restoredFromShare){
+    const hasDraft = loadDraft();
+    if(hasDraft){
+      applyContextToForm(state.context);
+      render();
+      showSections(true);
+    }
+  }
+}
+init();
+
+// ---------- 서비스워커 등록 (오프라인/PWA, HTTPS 환경 전제) ----------
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js").catch(err=>{
+      console.warn("서비스워커 등록 실패:", err);
+    });
+  });
+}
+</script>
+</body>
+</html>

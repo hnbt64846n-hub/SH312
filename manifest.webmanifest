@@ -1,0 +1,26 @@
+{
+  "name": "아이랑 나가요",
+  "short_name": "아이랑나가요",
+  "description": "영유아 자녀와 외출 시 상황에 맞는 준비물 체크리스트를 자동 생성하는 앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f7f5",
+  "theme_color": "#3a7d7b",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
