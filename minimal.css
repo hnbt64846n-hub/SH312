@@ -10,9 +10,16 @@ button,input,select{border-radius:10px}button:focus-visible,select:focus-visible
 .home-meta .child-row select{font-weight:400;font-size:14px;background:transparent;color:#737373;min-height:44px;padding:8px 0}
 .home-meta .child-row button{font-size:12px;color:#767676;background:transparent}
 .home-meta .resume-row{border:0;padding:0;min-height:44px;font-size:12px;color:#767676;width:auto}
-.outing-section{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:24px;padding:64px 0 90px;min-height:340px}
-.outing-section h1{font-size:clamp(25px,6.8vw,32px);font-weight:650;letter-spacing:-1.2px;text-align:center;margin:0}
-.outing-section select{width:100%;max-width:340px;min-height:64px;border:0;border-radius:18px;padding:18px 20px;background:#f4f4f4;color:#292929;font-size:17px;cursor:pointer}
+.outing-section{display:flex;flex-direction:column;align-items:center;gap:20px;padding:clamp(48px,9svh,88px) 0 48px}
+.outing-section h1{font-size:26px;line-height:1.4;font-weight:650;letter-spacing:-.8px;text-align:center;margin:0}
+.outing-dropdown{width:100%;max-width:340px;background:#f5f5f5;border-radius:16px;overflow:hidden}
+.outing-dropdown summary{min-height:58px;padding:16px 20px;list-style:none;font-size:16px;font-weight:500}
+.outing-dropdown summary::-webkit-details-marker{display:none}
+.outing-options{padding:0 8px 8px}
+.outing-options button{display:block;width:100%;min-height:48px;padding:12px;text-align:left;font-size:15px;border:0;background:transparent;border-radius:10px}
+.outing-options button:hover,.outing-options button:focus-visible{background:#eaeaea}
+.outing-options p{font-size:12px;color:#737373;padding:10px 12px 0;margin:0}
+.home-shell>.saved-places{margin-top:auto}
 .home-shell .saved-places{color:#767676;font-size:12px;border:0}
 .home-shell .saved-places summary{justify-content:center;list-style:none}
 .home-shell .saved-places summary::-webkit-details-marker{display:none}
