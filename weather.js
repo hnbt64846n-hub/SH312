@@ -20,4 +20,3 @@ window.AigoWeather=(()=>{
   function locate(){if(!navigator.geolocation){message='지역을 직접 선택해주세요.';paint();return;}message='위치 권한을 확인하고 있어요…';paint();navigator.geolocation.getCurrentPosition(pos=>{savedCity='';try{localStorage.removeItem('aigo_weather_city');}catch{}load('lat='+(Math.round(pos.coords.latitude*10)/10)+'&lon='+(Math.round(pos.coords.longitude*10)/10));},()=>{message='위치를 확인할 수 없어요. 지역을 선택해주세요.';paint();},{timeout:10000,maximumAge:600000,enableHighAccuracy:false});}
   return {mount(callback){onWeather=callback;paint();},init(callback){onWeather=callback;if(savedCity&&cities[savedCity])load('city='+savedCity);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!manual&&savedCity&&Date.now()-lastRequest>600000)load('city='+savedCity);});},manual(){selection++;manual=true;paint();}};
 })();
-

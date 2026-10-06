@@ -3,12 +3,24 @@ function baseSetting(type,c=child()) { return data.baseTemplates?.[c.id]?.[type]
 function baseName(type) { return baseSetting(type)?.name || DEST.find(d=>d.id===type)?.name || '외출'; }
 function baseItems(type,c=child()) { return baseSetting(type,c)?.items || rules(type,c); }
 function homeMarkup(c) {
-  return `<div class="home-intro"><h1>어디로 나갈까요?</h1></div>
-  <section class="destination-section" aria-labelledby="base-heading"><div class="section-heading"><h2 id="base-heading">기본 목적지</h2></div><div class="grid">${DEST.map(d=>`<div class="destination-card"><button class="tile" data-dest="${d.id}"><span class="icon">${d.icon}</span><strong>${esc(baseName(d.id))}</strong></button><button class="edit-default" data-edit-base="${d.id}" aria-label="${esc(baseName(d.id))} 기본 준비물 수정">수정</button></div>`).join('')}</div></section>
-  <section class="my-places" aria-labelledby="places-heading"><div class="section-heading"><h2 id="places-heading">내 장소</h2><button id="add-place">＋ 추가</button></div>${data.places.filter(p=>p.childId===c.id).map(p=>`<div class="place-row"><button data-place="${esc(p.id)}"><strong>${esc(p.name)}</strong></button><button data-edit-place="${esc(p.id)}" aria-label="${esc(p.name)} 수정">수정</button></div>`).join('')||'<p class="empty-place">자주 가는 곳을 추가해보세요.</p>'}</section>
-  ${draft()?'<button id="resume" class="wide">준비하던 목록 이어보기</button>':''}`;
+  return `<section class="outing-section"><h1>어떤 외출인가요<span class="accent">?</span></h1><div class="outing-list">${DEST.map((d,n)=>`<button class="outing-choice" data-dest="${d.id}"><span class="outing-number">0${n+1}</span><strong>${esc(baseName(d.id))}</strong><span aria-hidden="true">↗</span></button>`).join('')}</div></section>
+  <section class="child-summary" aria-label="아이 정보"><div class="child-row"><select id="child-picker" aria-label="함께 나가는 아이">${data.children.map(x=>`<option value="${esc(x.id)}" ${x.id===c.id?'selected':''}>${esc(x.name)} (${age(x.birth)}개월)</option>`).join('')}</select><button id="edit-child">정보 수정</button><button id="add-child">＋ 아이</button></div></section>
+  ${draft()?'<button id="resume" class="resume-row">이전 준비물 불러오기 <span aria-hidden="true">↗</span></button>':''}
+  <details class="saved-places"><summary>내 장소 <span>${data.places.filter(p=>p.childId===c.id).length} · 펼치기</span></summary><button id="add-place">＋ 장소 추가</button>${data.places.filter(p=>p.childId===c.id).map(p=>`<div class="place-row"><button data-place="${esc(p.id)}">${esc(p.name)}</button><button data-edit-place="${esc(p.id)}">수정</button></div>`).join('')}</details>`;
 }
-function renderHeaderTools(c){const el=document.getElementById('header-tools');if(!el)return;el.innerHTML=`<select id="child-picker" aria-label="아이 선택">${data.children.map(x=>`<option value="${esc(x.id)}" ${x.id===c.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select><details id="weather-settings" class="weather-compact"><summary id="weather-brief" aria-label="날씨 설정">☁</summary><section id="live-weather" aria-label="날씨 설정"></section><div class="weather-manual"><div class="row">${['normal','rain','hot','cold'].map(w=>`<button data-weather="${w}" aria-pressed="${data.weather===w}">${weatherLabel(w)}</button>`).join('')}</div></div></details>`;el.querySelector('#child-picker').onchange=e=>{data.active=e.target.value;save();render();};el.querySelectorAll('[data-weather]').forEach(b=>b.onclick=()=>{data.weather=b.dataset.weather;window.AigoWeather?.manual();save();render();});window.AigoWeather?.mount(applyAutomaticWeather);}
+function renderHeaderTools(){document.getElementById('header-tools').innerHTML='';}
+function bindHomeExtras(){
+ document.getElementById('child-picker').onchange=e=>{data.active=e.target.value;save();render();};
+}
+function mountListExtras(){
+ const heading=app.querySelector('h1');
+ const el=document.createElement('div');el.className='list-extras';
+ el.innerHTML=`<details class="weather-settings"><summary><span id="weather-line">날씨 자동설정</span><span aria-hidden="true">⌄</span></summary><section id="live-weather" aria-label="날씨 설정"></section><div class="row weather-manual">${['normal','rain','hot','cold'].map(w=>`<button data-weather="${w}" aria-pressed="${data.weather===w}">${weatherLabel(w)}</button>`).join('')}</div></details><button id="edit-list-default" class="text-action">기본 준비물 수정</button>`;
+ heading.after(el);
+ el.querySelectorAll('[data-weather]').forEach(b=>b.onclick=()=>{window.AigoWeather?.manual();applyAutomaticWeather(b.dataset.weather);render();});
+ el.querySelector('#edit-list-default').onclick=()=>editBase(draft().type);
+ window.AigoWeather?.mount(applyAutomaticWeather);
+}
 let baseEdit=null;
 function editBase(type) {baseEdit={type,name:baseName(type),items:baseItems(type).map(i=>({...i,checked:false}))};screen='base';render();window.scrollTo(0,0);}
 function renderBaseEditor() {
@@ -27,4 +39,3 @@ function applyAutomaticWeather(w){
   const d=draft();if(d&&d.autoWeather&&d.createdAt>=appStartedAt&&d.weather!==w){const old=new Map(d.items.filter(i=>i.kind==='weather').map(i=>[i.name,i]));const base=d.items.filter(i=>i.kind!=='weather');const names=new Set(base.map(i=>i.name));d.items=[...base,...weatherItems(w).filter(i=>!names.has(i.name)).map(i=>old.get(i.name)||i)];d.weather=w;save();if(screen==='list')render();}
   if(screen==='home'){app.querySelectorAll('[data-weather]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.weather===w)));}
 }
-

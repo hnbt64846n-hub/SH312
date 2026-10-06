@@ -1,0 +1,28 @@
+:root{color-scheme:light;--bg:#fff;--paper:#fff;--ink:#202020;--sub:#777;--line:#e9e9e9;--green:#edac39;--on:#202020;--soft:#fff6e5}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;font-size:15px;line-height:1.5;letter-spacing:-.3px}
+header,main,footer{max-width:540px;padding-left:24px;padding-right:24px}
+header{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:30px}
+.wordmark{font-size:17px;letter-spacing:-.6px}.wordmark span,.accent{color:#d9951c}
+h1{font-size:27px;letter-spacing:-1px;margin:0 0 22px;font-weight:750}
+button,input,select{border-radius:10px}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #b97300;outline-offset:3px}
+.outing-list{border-top:2px solid var(--ink)}
+.outing-choice{display:flex;align-items:center;gap:16px;width:100%;min-height:60px;padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;text-align:left;background:transparent}
+.outing-choice strong{flex:1;font-size:17px;font-weight:550;overflow-wrap:anywhere}
+.outing-number{font-size:11px;color:var(--sub);letter-spacing:1px}
+.outing-choice>span:last-child{font-size:20px;color:#b97500}
+.outing-choice:hover,.outing-choice:active{background:var(--soft)}
+.child-summary{margin-top:26px;padding:14px 0;border-bottom:1px solid var(--line)}
+.child-row{display:flex;align-items:center;gap:4px}.child-row select{flex:1;min-width:0;border:0;padding:8px 4px;font-size:16px;font-weight:600;background:#fafafa}
+.child-row button{border:0;padding:8px;font-size:12px;min-height:44px;white-space:nowrap}
+.resume-row{display:flex;justify-content:space-between;width:100%;padding:14px 0;min-height:48px;border:0;border-bottom:1px solid var(--line);border-radius:0;font-size:13px;color:#555}
+.saved-places{font-size:13px;margin:0}.saved-places summary{justify-content:space-between;min-height:48px}.saved-places summary span{color:var(--sub);font-size:12px}
+.saved-places[open]{padding-bottom:12px;border-bottom:1px solid var(--line)}
+.weather-settings{font-size:13px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.weather-settings summary{justify-content:space-between;gap:8px}.weather-settings #weather-line{display:block;white-space:normal;font-size:12px;color:#666}
+.weather-settings #live-weather{position:static;width:auto;padding:12px 0;border:0;box-shadow:none}
+.weather-manual{padding:10px 0}.text-action{font-size:12px;border:0;padding:8px 0;min-height:44px;color:#666}
+.list-extras{margin-bottom:12px}.panel{border-radius:12px;box-shadow:none;padding:12px;margin:16px 0}
+.share-intro p{display:none}.share-intro .primary{font-weight:650}
+.item .controls button{font-size:13px}.item small{font-size:11px}
+footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
+@media(max-width:360px){header,main,footer{padding-left:18px;padding-right:18px}.child-row button{padding:6px;font-size:11px}.outing-choice strong{font-size:16px}h1{font-size:25px}}

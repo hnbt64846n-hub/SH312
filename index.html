@@ -16,11 +16,12 @@
 .header-tools{gap:6px}.header-tools select{width:112px;max-width:130px;min-height:44px;padding:7px 9px;font-size:13px}.header-tools .weather-compact summary{justify-content:center;gap:3px;padding:7px 9px;min-height:44px;min-width:58px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font-size:14px}.header-tools .weather-compact summary::marker{font-size:0}
 .brand-title,.child-line{display:block}.child-line{font-size:14px;color:var(--sub);margin-top:2px}.weather-line{display:none}.header-tools{width:100%;justify-content:flex-start}.header-tools .weather-compact{flex:1}.header-tools .weather-compact summary{justify-content:flex-start;width:100%;font-size:13px}
 </style>
+<link rel="stylesheet" href="minimal.css">
 </head>
 <body>
-<header><div class="brand"><span class="brand-title">🌿 아이랑 나가요</span><span id="header-child-name" class="child-line"></span></div><div id="header-tools" class="header-tools"></div></header>
+<header><strong class="wordmark">아이랑 나가요<span>.</span></strong><div id="header-tools"></div></header>
 <div id="storage-error" role="alert" hidden></div><main id="app"></main><div id="notice" role="status" aria-live="polite"></div>
-<footer>아이 정보와 준비물은 이 기기의 브라우저에 저장돼요.<br>사이트 데이터 삭제 시 사라지며 다른 기기와 자동 동기화되지 않아요. · v2.3</footer>
+<footer>아이 정보와 준비물은 이 기기의 브라우저에 저장돼요.<br>사이트 데이터 삭제 시 사라지며 다른 기기와 자동 동기화되지 않아요. · v3.0</footer>
 <script src="weather.js"></script>
 <script src="customize.js"></script>
 <script src="share-image.js"></script>
@@ -63,9 +64,9 @@ const c=child();if(!c&&screen!=='profile'){screen='profile';editing=null;}
 if(screen==='profile'){renderProfile();return;}
 if(screen==='base'&&baseEdit){renderBaseEditor();return;}
 if(screen==='place'){renderPlace();return;}
-if(screen==='list'&&draft()){renderList();return;}
+if(screen==='list'&&draft()){renderList();mountListExtras();return;}
 screen='home';
-renderHeaderTools(c); app.innerHTML=homeMarkup(c);
+renderHeaderTools(c); app.innerHTML=homeMarkup(c);bindHomeExtras();
 bind('edit-child',()=>{editing=c.id;screen='profile';render();});bind('add-child',()=>{editing=null;screen='profile';render();});bind('add-place',()=>{placeEditing=null;screen='place';render();});bind('resume',()=>{screen='list';render();});
 app.querySelectorAll('[data-dest]').forEach(b=>b.onclick=()=>start(b.dataset.dest));app.querySelectorAll('[data-place]').forEach(b=>b.onclick=()=>{const p=data.places.find(p=>p.id===b.dataset.place);start(p.type,p);});app.querySelectorAll('[data-edit-place]').forEach(b=>b.onclick=()=>{placeEditing=b.dataset.editPlace;screen='place';render();});
 app.querySelectorAll('[data-edit-base]').forEach(b=>b.onclick=()=>editBase(b.dataset.editBase));
@@ -85,4 +86,3 @@ render();restoreShare();window.AigoWeather?.init(applyAutomaticWeather);
 if('serviceWorker'in navigator){let refreshing=false;const hadController=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController&&!refreshing){refreshing=true;location.reload();}});window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{});});}
 </script>
 </body></html>
-
