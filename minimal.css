@@ -65,15 +65,16 @@ footer{color:#777}
 @media(max-width:360px){.packing-item{gap:3px}.packing-item label{gap:6px}.packing-quantity button{width:30px}.packing-item .name{font-size:13px}}
 
 /* Modern white fields with the logo green as the only outline accent. */
-input:not([type=checkbox]),select{background:#fff!important;border:1px solid #5762d5!important;box-shadow:0 1px 2px rgba(34,42,112,.08);transition:box-shadow .15s,border-color .15s}
-input:not([type=checkbox]):focus,select:focus{border-color:#5762d5!important;box-shadow:0 0 0 3px rgba(87,98,213,.16);outline:0}
-.home-meta .child-row select{background:#fff!important;border:1px solid #5762d5!important;padding:8px 10px;border-radius:10px}
-.outing-section select{background:#fff!important;border:1px solid #5762d5!important}
-.packing-add input{background:#fff!important;border:1px solid #5762d5!important}
+input:not([type=checkbox]),select{background:#fff!important;border:1px solid #EFE095!important;box-shadow:0 1px 2px rgba(75,65,15,.08);transition:box-shadow .15s,border-color .15s}
+input:not([type=checkbox]):focus,select:focus{border-color:#EFE095!important;box-shadow:0 0 0 3px rgba(239,224,149,.3);outline:0}
+.home-meta .child-row select{background:#fff!important;border:1px solid #EFE095!important;padding:8px 10px;border-radius:10px}
+.outing-section select{background:#fff!important;border:1px solid #EFE095!important}
+.packing-add input{background:#fff!important;border:1px solid #EFE095!important}
 .packing-heading>button{font-size:0;width:36px;min-height:40px;position:relative}
 .packing-heading>button::before{content:'‹';font-size:30px;line-height:1;color:#5762d5;position:absolute;left:7px;top:3px}
 .outing-dropdown{background:#EFE095}
 .outing-options button:hover,.outing-options button:focus-visible{background:#f5edb8}
+.packing-add button:active,.packing-actions>button:active,.outing-options button:active{background:#EFE095!important}
 .item .controls button{font-size:13px}.item small{font-size:11px}
 footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
 @media(max-width:360px){header,main,footer{padding-left:18px;padding-right:18px}.child-row button{padding:6px;font-size:11px}.outing-choice strong{font-size:16px}h1{font-size:25px}}

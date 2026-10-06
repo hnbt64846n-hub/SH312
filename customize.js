@@ -9,9 +9,7 @@ function homeMarkup(c) {
 }
 function renderHeaderTools(){document.getElementById('header-tools').innerHTML='';}
 function bindHomeExtras(){
- const family=document.createElement('button');family.id='share-family';family.className='family-share';family.textContent='가족에게 아이 정보 공유';document.querySelector('.home-meta')?.appendChild(family);family.onclick=shareFamily;
  document.getElementById('child-picker').onchange=e=>{data.active=e.target.value;save();render();};
- document.getElementById('share-family')?.addEventListener('click',()=>shareFamily());
  const picker=document.getElementById('outing-picker');
  picker.ontoggle=()=>{if(picker.open)requestAnimationFrame(()=>picker.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'}));};
  picker.onkeydown=e=>{if(e.key==='Escape'){picker.open=false;picker.querySelector('summary').focus();}};
@@ -26,7 +24,6 @@ function mountListExtras(){
  window.AigoWeather?.mount(applyAutomaticWeather);
 }
 let baseEdit=null;
-function shareFamily(){const c=child();if(!c)return;const payload={kind:'family',version:1,child:c,places:data.places.filter(p=>p.childId===c.id),baseTemplates:{[c.id]:data.baseTemplates?.[c.id]||{}}};const url=location.origin+location.pathname+'#family='+btoa(unescape(encodeURIComponent(JSON.stringify(payload))));try{navigator.clipboard.writeText(url);toast('가족 공유 링크를 복사했어요.');}catch{prompt('가족에게 보낼 링크를 복사해주세요.',url);}}
 function editBase(type) {baseEdit={type,name:baseName(type),items:baseItems(type).map(i=>({...i,checked:false}))};screen='base';render();window.scrollTo(0,0);}
 function renderBaseEditor() {
   const b=baseEdit;
