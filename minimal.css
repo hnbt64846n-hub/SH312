@@ -8,7 +8,7 @@ button,input,select{border-radius:10px}button:focus-visible,select:focus-visible
 .home-shell{min-height:calc(100svh - 180px);display:flex;flex-direction:column}
 .home-meta{flex:none}
 .home-secondary{display:flex;flex-direction:column;width:100%;gap:0}
-.home-secondary .resume-row,.home-secondary .saved-places>summary{display:flex;justify-content:flex-start;align-items:center;width:100%;min-height:44px;padding:0;margin:0;text-align:left;font-size:12px;font-weight:400;line-height:1.5;color:#767676;border:0;background:transparent}
+.home-secondary .resume-row,.home-secondary .saved-places>summary{display:flex;justify-content:flex-start;align-items:center;width:100%;min-height:36px;padding:0;margin:0;text-align:left;font-size:12px;font-weight:400;line-height:1.5;color:#767676;border:0;background:transparent}
 .home-secondary .saved-places{margin:0;width:100%}
 .delete-child{display:block;margin:20px auto 0;min-height:44px;border:0;background:transparent;color:#a23d3d;font-size:13px}
 .home-meta .child-row select{font-weight:400;font-size:14px;background:transparent;color:#5762d5;min-height:44px;padding:8px 0}
@@ -26,7 +26,7 @@ button,input,select{border-radius:10px}button:focus-visible,select:focus-visible
 .outing-options p{font-size:12px;color:#737373;padding:10px 12px 0;margin:0}
 .home-shell>.saved-places{margin-top:auto}
 .home-shell .saved-places{color:#767676;font-size:12px;border:0}
-.home-shell .saved-places summary{justify-content:center;list-style:none}
+.home-shell .saved-places summary{justify-content:flex-start;list-style:none}
 .home-shell .saved-places summary::-webkit-details-marker{display:none}
 .home-shell .saved-places[open]{border:0}
 .panel,.weather-settings,.item{border:0}
