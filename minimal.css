@@ -44,6 +44,24 @@ footer{color:#777}
 .weather-manual{padding:10px 0}.text-action{font-size:12px;border:0;padding:8px 0;min-height:44px;color:#666}
 .list-extras{margin-bottom:12px}.panel{border-radius:12px;box-shadow:none;padding:12px;margin:16px 0}
 .share-intro p{display:none}.share-intro .primary{font-weight:650}
+.packing-heading{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.packing-heading>button{padding:8px 0;border:0;font-size:12px;color:#737373;flex-shrink:0}
+.packing-heading h1{font-size:20px;line-height:1.4;margin:0;letter-spacing:-.5px}
+.packing-add{display:flex;gap:8px;margin:0 0 12px}
+.packing-add input{flex:1;width:0;border:0!important;background:#f5f5f5!important}
+.packing-add button{border:0;background:#f1f1f1;min-width:52px}
+.packing-item{display:flex;align-items:center;gap:6px;min-height:48px;padding:2px 0}
+.packing-item label{display:flex;align-items:center;gap:8px;min-width:0;flex:1;min-height:44px}
+.packing-item input[type=checkbox]{width:20px;height:20px;margin:0}
+.packing-item .name{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.packing-quantity{display:flex;align-items:center;flex:none;gap:0}
+.packing-quantity button{width:36px;min-height:44px;padding:0;border:0;background:transparent;font-size:16px}
+.packing-quantity span{min-width:30px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums}
+.packing-delete{min-width:36px;min-height:44px;padding:0 2px;border:0;background:transparent;color:#777;font-size:12px}
+.packing-actions{display:grid;gap:8px;margin-top:24px}
+.packing-actions>button{border:0;background:#f5f5f5;font-size:14px}
+.packing-actions>button.primary{background:#222;color:#fff}
+@media(max-width:360px){.packing-item{gap:3px}.packing-item label{gap:6px}.packing-quantity button{width:30px}.packing-item .name{font-size:13px}}
 .item .controls button{font-size:13px}.item small{font-size:11px}
 footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
 @media(max-width:360px){header,main,footer{padding-left:18px;padding-right:18px}.child-row button{padding:6px;font-size:11px}.outing-choice strong{font-size:16px}h1{font-size:25px}}
