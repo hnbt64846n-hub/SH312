@@ -6,8 +6,11 @@ header{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:30px}
 h1{font-size:27px;letter-spacing:-1px;margin:0 0 22px;font-weight:750}
 button,input,select{border-radius:10px}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #555;outline-offset:3px}
 .home-shell{min-height:calc(100svh - 180px);display:flex;flex-direction:column}
-.home-meta{display:contents}
-.home-shell>.child-row,.home-meta .child-row{order:1}.home-shell>.outing-section{order:2}.home-shell>.resume-row,.home-meta .resume-row{order:3}.home-shell>.saved-places{order:4}
+.home-meta{flex:none}
+.home-secondary{display:flex;flex-direction:column;width:100%;gap:0}
+.home-secondary .resume-row,.home-secondary .saved-places>summary{display:flex;justify-content:flex-start;align-items:center;width:100%;min-height:44px;padding:0;margin:0;text-align:left;font-size:12px;font-weight:400;line-height:1.5;color:#767676;border:0;background:transparent}
+.home-secondary .saved-places{margin:0;width:100%}
+.delete-child{display:block;margin:20px auto 0;min-height:44px;border:0;background:transparent;color:#a23d3d;font-size:13px}
 .home-meta .child-row select{font-weight:400;font-size:14px;background:transparent;color:#5762d5;min-height:44px;padding:8px 0}
 .home-meta .child-row button{font-size:12px;color:#767676;background:transparent}
 .home-meta .resume-row{border:0;padding:0;min-height:44px;font-size:12px;color:#767676;width:auto}
