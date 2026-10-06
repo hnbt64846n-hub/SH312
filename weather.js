@@ -3,8 +3,7 @@ window.AigoWeather=(()=>{
   let result=null,busy=false,message='',onWeather=()=>{},savedCity='',manual=false,selection=0,lastRequest=0;
   try{savedCity=localStorage.getItem('aigo_weather_city')||'';}catch{}
   function paint(){
-    const text=busy?'현재 위치 · 날씨 확인 중…':manual?'현재 위치 · 직접 선택한 날씨 적용':result?`${cities[savedCity]||'현재 위치'} ${result.temp}°C · 준비물 자동 반영`:message?'현재 위치 · 날씨 조회 안 됨':'현재 위치 · 날씨 자동 설정';
-    const brief=document.getElementById('weather-brief');if(brief)brief.textContent='☁';const line=document.getElementById('weather-line');if(line)line.textContent=text;
+    const brief=document.getElementById('weather-brief');if(brief)brief.textContent=busy?'☁ 날씨 확인 중…':manual?'☁ 직접 선택한 날씨 적용 중':result?`☁ ${cities[savedCity]||'현재 위치'} ${result.temp}°C · 준비물 자동 반영`:message?'☁ 날씨 조회 안 됨 · 직접 선택 가능':'☁ 날씨 자동 설정';
     const el=document.getElementById('live-weather');if(!el)return;
     el.innerHTML='<p id="weather-status" class="sub" role="status"></p><div class="row"><button id="locate-weather">현재 위치</button><select id="weather-city" aria-label="날씨 지역" style="flex:1;width:130px"><option value="">지역 선택</option>'+Object.entries(cities).map(([k,v])=>`<option value="${k}" ${savedCity===k?'selected':''}>${v}</option>`).join('')+'</select><button id="refresh-weather">새로고침</button></div><p class="sub">지역을 한 번 정하면 자동으로 확인해요. 현재 위치는 약 10km 단위로 조회하며 저장하지 않아요. 현재 날씨 기준 · <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeather</a></p>';
     document.getElementById('weather-status').textContent=busy?'날씨를 확인하고 있어요…':message||(result?`${result.description} · ${result.temp}°C (체감 ${result.feelsLike}°C) · ${new Date(result.observedAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})} 관측`:'날씨에 맞는 준비물을 자동으로 더하려면 지역을 선택해주세요.');
@@ -20,4 +19,3 @@ window.AigoWeather=(()=>{
   function locate(){if(!navigator.geolocation){message='지역을 직접 선택해주세요.';paint();return;}message='위치 권한을 확인하고 있어요…';paint();navigator.geolocation.getCurrentPosition(pos=>{savedCity='';try{localStorage.removeItem('aigo_weather_city');}catch{}load('lat='+(Math.round(pos.coords.latitude*10)/10)+'&lon='+(Math.round(pos.coords.longitude*10)/10));},()=>{message='위치를 확인할 수 없어요. 지역을 선택해주세요.';paint();},{timeout:10000,maximumAge:600000,enableHighAccuracy:false});}
   return {mount(callback){onWeather=callback;paint();},init(callback){onWeather=callback;if(savedCity&&cities[savedCity])load('city='+savedCity);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!manual&&savedCity&&Date.now()-lastRequest>600000)load('city='+savedCity);});},manual(){selection++;manual=true;paint();}};
 })();
-
