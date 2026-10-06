@@ -2,7 +2,7 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;font-size:15px;line-height:1.5;letter-spacing:-.3px}
 header,main,footer{max-width:540px;padding-left:24px;padding-right:24px}
 header{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:30px}
-.wordmark{font-size:17px;letter-spacing:-.6px;color:#39715b}.wordmark span{display:none}
+.wordmark{font-size:17px;letter-spacing:-.6px;color:#5762d5}.wordmark span{display:none}
 h1{font-size:27px;letter-spacing:-1px;margin:0 0 22px;font-weight:750}
 button,input,select{border-radius:10px}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #555;outline-offset:3px}
 .home-shell{min-height:calc(100svh - 180px);display:flex;flex-direction:column}
@@ -50,7 +50,7 @@ footer{color:#777}
 .packing-heading h1{font-size:20px;line-height:1.4;margin:0;letter-spacing:-.5px}
 .packing-add{display:flex;gap:8px;margin:0 0 12px}
 .packing-add input{flex:1;width:0;border:0!important;background:#f5f5f5!important}
-.packing-add button{border:0;background:#f1f1f1;min-width:52px}
+.packing-add button{border:0;background:#EFE095;min-width:52px}
 .packing-item{display:flex;align-items:center;gap:6px;min-height:48px;padding:2px 0}
 .packing-item label{display:flex;align-items:center;gap:8px;min-width:0;flex:1;min-height:44px}
 .packing-item input[type=checkbox]{width:20px;height:20px;margin:0}
@@ -60,18 +60,20 @@ footer{color:#777}
 .packing-quantity span{min-width:30px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums}
 .packing-delete{min-width:36px;min-height:44px;padding:0 2px;border:0;background:transparent;color:#777;font-size:12px}
 .packing-actions{display:grid;gap:8px;margin-top:24px}
-.packing-actions>button{border:0;background:#f5f5f5;font-size:14px}
-.packing-actions>button.primary{background:#222;color:#fff}
+.packing-actions>button{border:0;background:#EFE095;font-size:14px}
+.packing-actions>button.primary{background:#EFE095;color:#222}
 @media(max-width:360px){.packing-item{gap:3px}.packing-item label{gap:6px}.packing-quantity button{width:30px}.packing-item .name{font-size:13px}}
 
 /* Modern white fields with the logo green as the only outline accent. */
-input:not([type=checkbox]),select{background:#fff!important;border:1px solid #39715b!important;box-shadow:0 1px 2px rgba(31,64,49,.05);transition:box-shadow .15s,border-color .15s}
-input:not([type=checkbox]):focus,select:focus{border-color:#39715b!important;box-shadow:0 0 0 3px rgba(57,113,91,.14);outline:0}
-.home-meta .child-row select{background:#fff!important;border:1px solid #39715b!important;padding:8px 10px;border-radius:10px}
-.outing-section select{background:#fff!important;border:1px solid #39715b!important}
-.packing-add input{background:#fff!important;border:1px solid #39715b!important}
+input:not([type=checkbox]),select{background:#fff!important;border:1px solid #5762d5!important;box-shadow:0 1px 2px rgba(34,42,112,.08);transition:box-shadow .15s,border-color .15s}
+input:not([type=checkbox]):focus,select:focus{border-color:#5762d5!important;box-shadow:0 0 0 3px rgba(87,98,213,.16);outline:0}
+.home-meta .child-row select{background:#fff!important;border:1px solid #5762d5!important;padding:8px 10px;border-radius:10px}
+.outing-section select{background:#fff!important;border:1px solid #5762d5!important}
+.packing-add input{background:#fff!important;border:1px solid #5762d5!important}
 .packing-heading>button{font-size:0;width:36px;min-height:40px;position:relative}
-.packing-heading>button::before{content:'‹';font-size:30px;line-height:1;color:#39715b;position:absolute;left:7px;top:3px}
+.packing-heading>button::before{content:'‹';font-size:30px;line-height:1;color:#5762d5;position:absolute;left:7px;top:3px}
+.outing-dropdown{background:#EFE095}
+.outing-options button:hover,.outing-options button:focus-visible{background:#f5edb8}
 .item .controls button{font-size:13px}.item small{font-size:11px}
 footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
 @media(max-width:360px){header,main,footer{padding-left:18px;padding-right:18px}.child-row button{padding:6px;font-size:11px}.outing-choice strong{font-size:16px}h1{font-size:25px}}
