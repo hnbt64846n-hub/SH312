@@ -14,10 +14,11 @@
 .destination-section,.my-places{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 14px;box-shadow:0 2px 8px #1833220b}.destination-card .tile{min-height:68px}.destination-card strong{font-size:14px;word-break:keep-all}.section-heading h2{font-size:17px}.home-intro h1{font-size:24px}.section-heading>span{font-size:12px}header{gap:8px;padding-bottom:14px}dialog{max-height:90vh;max-height:90dvh}.my-places{background:var(--soft)}
 /* Larger touch targets for the compact header controls. */
 .header-tools{gap:6px}.header-tools select{width:112px;max-width:130px;min-height:44px;padding:7px 9px;font-size:13px}.header-tools .weather-compact summary{justify-content:center;gap:3px;padding:7px 9px;min-height:44px;min-width:58px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font-size:14px}.header-tools .weather-compact summary::marker{font-size:0}
+.brand-title,.child-line{display:block}.child-line{font-size:14px;color:var(--sub);margin-top:2px}.weather-line{display:none}.header-tools{width:100%;justify-content:flex-start}.header-tools .weather-compact{flex:1}.header-tools .weather-compact summary{justify-content:flex-start;width:100%;font-size:13px}
 </style>
 </head>
 <body>
-<header><div class="brand"><span class="brand-title">🌿 아이랑 나가요 <span id="header-child-name"></span></span><span id="weather-line" class="weather-line">현재 위치 · 날씨 확인 중…</span></div><div id="header-tools" class="header-tools"></div></header>
+<header><div class="brand"><span class="brand-title">🌿 아이랑 나가요</span><span id="header-child-name" class="child-line"></span></div><div id="header-tools" class="header-tools"></div></header>
 <div id="storage-error" role="alert" hidden></div><main id="app"></main><div id="notice" role="status" aria-live="polite"></div>
 <footer>아이 정보와 준비물은 이 기기의 브라우저에 저장돼요.<br>사이트 데이터 삭제 시 사라지며 다른 기기와 자동 동기화되지 않아요. · v2.3</footer>
 <script src="weather.js"></script>
