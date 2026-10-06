@@ -62,6 +62,15 @@ footer{color:#777}
 .packing-actions>button{border:0;background:#f5f5f5;font-size:14px}
 .packing-actions>button.primary{background:#222;color:#fff}
 @media(max-width:360px){.packing-item{gap:3px}.packing-item label{gap:6px}.packing-quantity button{width:30px}.packing-item .name{font-size:13px}}
+
+/* Modern white fields with the logo green as the only outline accent. */
+input:not([type=checkbox]),select{background:#fff!important;border:1px solid #39715b!important;box-shadow:0 1px 2px rgba(31,64,49,.05);transition:box-shadow .15s,border-color .15s}
+input:not([type=checkbox]):focus,select:focus{border-color:#39715b!important;box-shadow:0 0 0 3px rgba(57,113,91,.14);outline:0}
+.home-meta .child-row select{background:#fff!important;border:1px solid #39715b!important;padding:8px 10px;border-radius:10px}
+.outing-section select{background:#fff!important;border:1px solid #39715b!important}
+.packing-add input{background:#fff!important;border:1px solid #39715b!important}
+.packing-heading>button{font-size:0;width:36px;min-height:40px;position:relative}
+.packing-heading>button::before{content:'‹';font-size:30px;line-height:1;color:#39715b;position:absolute;left:7px;top:3px}
 .item .controls button{font-size:13px}.item small{font-size:11px}
 footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
 @media(max-width:360px){header,main,footer{padding-left:18px;padding-right:18px}.child-row button{padding:6px;font-size:11px}.outing-choice strong{font-size:16px}h1{font-size:25px}}
