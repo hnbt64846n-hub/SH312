@@ -6,8 +6,9 @@ header{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:30px}
 h1{font-size:27px;letter-spacing:-1px;margin:0 0 22px;font-weight:750}
 button,input,select{border-radius:10px}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #555;outline-offset:3px}
 .home-shell{min-height:calc(100svh - 180px);display:flex;flex-direction:column}
-.home-meta{flex:none}
-.home-meta .child-row select{font-weight:400;font-size:14px;background:transparent;color:#737373;min-height:44px;padding:8px 0}
+.home-meta{display:contents}
+.home-shell>.child-row{order:1}.home-shell>.outing-section{order:2}.home-shell>.resume-row{order:3}.home-shell>.saved-places{order:4}
+.home-meta .child-row select{font-weight:400;font-size:14px;background:transparent;color:#5762d5;min-height:44px;padding:8px 0}
 .home-meta .child-row button{font-size:12px;color:#767676;background:transparent}
 .home-meta .resume-row{border:0;padding:0;min-height:44px;font-size:12px;color:#767676;width:auto}
 .family-share{border:0;background:transparent;color:#39715b;font-size:12px;padding:6px 0;min-height:36px}
@@ -72,9 +73,12 @@ input:not([type=checkbox]):focus,select:focus{border-color:#EFE095!important;box
 .packing-add input{background:#fff!important;border:1px solid #EFE095!important}
 .packing-heading>button{font-size:0;width:36px;min-height:40px;position:relative}
 .packing-heading>button::before{content:'‹';font-size:30px;line-height:1;color:#5762d5;position:absolute;left:7px;top:3px}
-.outing-dropdown{background:#EFE095}
-.outing-options button:hover,.outing-options button:focus-visible{background:#f5edb8}
+.outing-dropdown{background:#fff;border:1px solid #5762d5}
+.outing-options button:hover,.outing-options button:focus-visible,.outing-options button:active{background:#EFE095}
 .packing-add button:active,.packing-actions>button:active,.outing-options button:active{background:#EFE095!important}
 .item .controls button{font-size:13px}.item small{font-size:11px}
 footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
 @media(max-width:360px){header,main,footer{padding-left:18px;padding-right:18px}.child-row button{padding:6px;font-size:11px}.outing-choice strong{font-size:16px}h1{font-size:25px}}
+.home-meta .child-row select,.outing-section select,.packing-add input{border-color:#5762d5!important}
+.packing-add button,.packing-actions>button{background:#fff;border:1px solid #5762d5;color:#222}
+.packing-actions>button.primary{background:#fff;color:#222;border-color:#5762d5}
