@@ -3,14 +3,18 @@ function baseSetting(type,c=child()) { return data.baseTemplates?.[c.id]?.[type]
 function baseName(type) { return baseSetting(type)?.name || DEST.find(d=>d.id===type)?.name || '외출'; }
 function baseItems(type,c=child()) { return baseSetting(type,c)?.items || rules(type,c); }
 function homeMarkup(c) {
-  return `<section class="outing-section"><h1>어떤 외출인가요<span class="accent">?</span></h1><div class="outing-list">${DEST.map((d,n)=>`<button class="outing-choice" data-dest="${d.id}"><span class="outing-number">0${n+1}</span><strong>${esc(baseName(d.id))}</strong><span aria-hidden="true">↗</span></button>`).join('')}</div></section>
-  <section class="child-summary" aria-label="아이 정보"><div class="child-row"><select id="child-picker" aria-label="함께 나가는 아이">${data.children.map(x=>`<option value="${esc(x.id)}" ${x.id===c.id?'selected':''}>${esc(x.name)} (${age(x.birth)}개월)</option>`).join('')}</select><button id="edit-child">정보 수정</button><button id="add-child">＋ 아이</button></div></section>
-  ${draft()?'<button id="resume" class="resume-row">이전 준비물 불러오기 <span aria-hidden="true">↗</span></button>':''}
-  <details class="saved-places"><summary>내 장소 <span>${data.places.filter(p=>p.childId===c.id).length} · 펼치기</span></summary><button id="add-place">＋ 장소 추가</button>${data.places.filter(p=>p.childId===c.id).map(p=>`<div class="place-row"><button data-place="${esc(p.id)}">${esc(p.name)}</button><button data-edit-place="${esc(p.id)}">수정</button></div>`).join('')}</details>`;
+ return `<div class="home-shell"><section class="home-meta" aria-label="아이 정보"><div class="child-row"><select id="child-picker" aria-label="함께 나가는 아이">${data.children.map(x=>`<option value="${esc(x.id)}" ${x.id===c.id?'selected':''}>${esc(x.name)} (${age(x.birth)}개월)</option>`).join('')}</select><button id="edit-child">정보 수정</button><button id="add-child">아이 추가</button></div>${draft()?'<button id="resume" class="resume-row">이전 준비물 불러오기</button>':''}</section>
+ <section class="outing-section" aria-labelledby="outing-question"><h1 id="outing-question">어떤 외출인가요?</h1><select id="outing-picker" aria-labelledby="outing-question"><option value="" selected disabled>외출 선택</option><optgroup label="기본 외출">${DEST.map(d=>`<option value="dest:${d.id}">${esc(baseName(d.id))}</option>`).join('')}</optgroup>${data.places.some(p=>p.childId===c.id)?`<optgroup label="내 장소">${data.places.filter(p=>p.childId===c.id).map(p=>`<option value="place:${esc(p.id)}">${esc(p.name)}</option>`).join('')}</optgroup>`:''}</select></section>
+ <details class="saved-places"><summary>내 장소 관리</summary><button id="add-place">장소 추가</button>${data.places.filter(p=>p.childId===c.id).map(p=>`<div class="place-row"><button data-place="${esc(p.id)}">${esc(p.name)}</button><button data-edit-place="${esc(p.id)}">수정</button></div>`).join('')}</details></div>`;
 }
 function renderHeaderTools(){document.getElementById('header-tools').innerHTML='';}
 function bindHomeExtras(){
  document.getElementById('child-picker').onchange=e=>{data.active=e.target.value;save();render();};
+ document.getElementById('outing-picker').onchange=e=>{
+  const value=e.target.value;e.target.value='';
+  if(value.startsWith('dest:'))start(value.slice(5));
+  else {const p=data.places.find(p=>p.id===value.slice(6)&&p.childId===child().id);if(p)start(p.type,p);}
+ };
 }
 function mountListExtras(){
  const heading=app.querySelector('h1');
