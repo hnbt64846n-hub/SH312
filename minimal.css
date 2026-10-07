@@ -96,6 +96,14 @@ input:not([type=checkbox]),select{box-shadow:none}
 footer{color:#918a80}
 
 /* A quiet seasonal walk in the space below the home actions. */
-.home-scene{display:flex;flex:1;align-items:center;justify-content:center;min-height:120px;padding-top:8px;pointer-events:none;user-select:none}
-.home-scene picture{display:block;width:clamp(180px,32svh,300px);max-width:100%}
-.home-scene img{display:block;width:100%;height:auto;image-rendering:pixelated}
+.home-scene{display:flex;flex:1;align-items:center;justify-content:center;min-height:180px;padding:8px 0;pointer-events:none;user-select:none}
+.home-scene canvas,.home-scene img{display:block;width:min(100%,360px);height:auto;image-rendering:pixelated}
+.home-weather{display:block;min-height:36px;padding:4px 0;border:0;background:transparent;color:var(--sub);font-size:11px;text-align:left;font-weight:400}
+.location-choice{max-width:340px;margin:clamp(56px,12svh,110px) auto 0;text-align:center}
+.location-choice h1{font-size:26px;line-height:1.45;margin-bottom:18px;font-weight:500}
+.location-choice p{color:var(--sub);font-size:13px;line-height:1.8}
+.location-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:28px 0 20px}
+.location-actions button{min-height:48px;background:#fff;border:1px solid #5762d5;color:var(--ink);font-size:14px;font-weight:400}
+.location-actions button:active{background:#EFE095}
+.location-choice .location-note{font-size:11px;color:var(--sub)}
+

@@ -1,5 +1,5 @@
-const CACHE='aigo-cache-v3.13';
-const SHELL=['./','./index.html','./minimal.css','./weather.js','./customize.js','./share-image.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png',...['spring','summer','autumn','winter'].flatMap(season=>['gif','png'].map(ext=>`./images/walk-${season}.${ext}`))];
+const CACHE='aigo-cache-v3.14';
+const SHELL=['./','./index.html','./minimal.css','./weather.js','./customize.js','./outing-scene.js','./share-image.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png',...['spring','summer','autumn','winter'].flatMap(season=>[`./images/scene-${season}.png`,`./images/walk-${season}.png`])];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('aigo-cache-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{
@@ -11,3 +11,4 @@ self.addEventListener('fetch',event=>{
     catch{const cached=await cache.match(event.request);if(cached)return cached;if(event.request.mode==='navigate')return (await cache.match('./index.html'))||Response.error();return Response.error();}
   })());
 });
+
