@@ -15,8 +15,11 @@ module.exports=async function(req,res){
     const w=await get('data/2.5/weather',{lat,lon,units:'metric',lang:'kr'});
     if(!Number.isFinite(w.main?.temp)||!Number.isFinite(w.main?.feels_like)||!Number.isFinite(w.weather?.[0]?.id))throw Error('invalid response');
     const code=w.weather[0].id,feels=w.main.feels_like;
+    const codes=w.weather.map(v=>v.id);
+    const precipitation=codes.some(v=>v>=600&&v<700)?'snow':codes.some(v=>v>=200&&v<600)?'rain':'none';
     const conditions=[];if(code>=200&&code<600)conditions.push('rain');if(code>=600&&code<700||feels<=10)conditions.push('cold');if(feels>=28)conditions.push('hot');
-    const value={temp:Math.round(w.main.temp),feelsLike:Math.round(feels),description:w.weather[0].description||'현재 날씨',conditions,observedAt:w.dt*1000,checkedAt:Date.now(),source:'OpenWeather'};
+    const value={temp:Math.round(w.main.temp),feelsLike:Math.round(feels),description:typeof w.weather[0].description==='string'?w.weather[0].description:'현재 날씨',conditions,precipitation,observedAt:Number.isFinite(w.dt)?w.dt*1000:Date.now(),checkedAt:Date.now(),source:'OpenWeather'};
     if(cache.size>=200)cache.delete(cache.keys().next().value);cache.set(cacheKey,{saved:Date.now(),data:value});return res.status(200).json(value);
   }catch(e){return res.status(502).json({error:e.status===401?'날씨 인증을 확인 중이에요. 키 활성화 후 다시 시도해주세요.':e.status===429?'날씨 요청이 많아요. 잠시 후 다시 시도해주세요.':'날씨를 가져오지 못했어요. 직접 선택해도 준비할 수 있어요.'});}
 };
+
