@@ -2,10 +2,18 @@
 function baseSetting(type,c=child()) { return data.baseTemplates?.[c.id]?.[type]; }
 function baseName(type) { return baseSetting(type)?.name || DEST.find(d=>d.id===type)?.name || '외출'; }
 function baseItems(type,c=child()) { return baseSetting(type,c)?.items || rules(type,c); }
+function seasonForDate(date=new Date()){
+ const month=date.getMonth()+1;
+ return month>=3&&month<=5?'spring':month>=6&&month<=8?'summer':month>=9&&month<=11?'autumn':'winter';
+}
+function seasonalSceneMarkup(){
+ const season=seasonForDate();
+ return `<div class="home-scene" aria-hidden="true" data-season="${season}"><picture><source media="(prefers-reduced-motion: reduce)" srcset="images/walk-${season}.png"><img src="images/walk-${season}.gif" width="384" height="384" alt="" decoding="async"></picture></div>`;
+}
 function homeMarkup(c) {
  return `<div class="home-shell"><section class="home-meta" aria-label="아이 정보"><div class="child-row"><select id="child-picker" aria-label="함께 나가는 아이">${data.children.map(x=>`<option value="${esc(x.id)}" ${x.id===c.id?'selected':''}>${esc(x.name)} (${age(x.birth)}개월)</option>`).join('')}</select><button id="edit-child">정보 수정</button><button id="add-child">아이 추가</button></div></section>
  <section class="outing-section" aria-labelledby="outing-question"><h1 id="outing-question">어떤 외출인가요?</h1><details class="outing-dropdown" id="outing-picker"><summary>외출 선택</summary><div class="outing-options" aria-label="외출 종류">${DEST.map(d=>`<button data-dest="${d.id}">${esc(baseName(d.id))}</button>`).join('')}${data.places.some(p=>p.childId===c.id)?`<p>내 장소</p>${data.places.filter(p=>p.childId===c.id).map(p=>`<button data-place="${esc(p.id)}">${esc(p.name)}</button>`).join('')}`:''}</div></details></section>
- <div class="home-secondary">${draft()?'<button id="resume" class="resume-row">이전 준비물 불러오기</button>':''}<details class="saved-places"><summary>내 장소 관리</summary><button id="add-place">장소 추가</button>${data.places.filter(p=>p.childId===c.id).map(p=>`<div class="place-row"><button data-place="${esc(p.id)}">${esc(p.name)}</button><button data-edit-place="${esc(p.id)}">수정</button></div>`).join('')}</details></div></div>`;
+ <div class="home-secondary">${draft()?'<button id="resume" class="resume-row">이전 준비물 불러오기</button>':''}<details class="saved-places"><summary>내 장소 관리</summary><button id="add-place">장소 추가</button>${data.places.filter(p=>p.childId===c.id).map(p=>`<div class="place-row"><button data-place="${esc(p.id)}">${esc(p.name)}</button><button data-edit-place="${esc(p.id)}">수정</button></div>`).join('')}</details></div>${seasonalSceneMarkup()}</div>`;
 }
 function renderHeaderTools(){document.getElementById('header-tools').innerHTML='';}
 function bindHomeExtras(){

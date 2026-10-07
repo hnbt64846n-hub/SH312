@@ -94,3 +94,8 @@ footer{font-size:10px;line-height:1.7;padding-top:30px;color:#999}
 input::placeholder{color:#969086;opacity:1}
 input:not([type=checkbox]),select{box-shadow:none}
 footer{color:#918a80}
+
+/* A quiet seasonal walk in the space below the home actions. */
+.home-scene{display:flex;flex:1;align-items:center;justify-content:center;min-height:120px;padding-top:8px;pointer-events:none;user-select:none}
+.home-scene picture{display:block;width:clamp(180px,32svh,300px);max-width:100%}
+.home-scene img{display:block;width:100%;height:auto;image-rendering:pixelated}
