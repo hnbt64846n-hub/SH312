@@ -44,7 +44,7 @@ function draft(){return data.drafts[child()?.id];}
 function age(birth){const d=new Date(birth+'T00:00:00'),n=new Date();return Math.max(0,(n.getFullYear()-d.getFullYear())*12+n.getMonth()-d.getMonth()-(n.getDate()<d.getDate()?1:0));}
 function localDate(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function item(name,qty=1,kind='base',reason='기본 준비물'){return {id:id(),name,qty,kind,reason,checked:false};}
-function rules(type,c){let a=[item('물티슈'),item('손수건')];if(c.diaper)a.push(item('기저귀',type==='trip'?8:type==='park'?4:2,'diaper','아이 생활 정보'),item('기저귀 처리 봉투',2,'diaper','아이 생활 정보'));if(c.feed)a.push(item('평소 수유용품',1,'feed','아이 생활 정보'));if(age(c.birth)>=6)a.push(item('평소 마시는 물 / 물병'));
+function rules(type,c){let a=[item('물티슈'),item('손수건')];if(c.diaper)a.push(item('기저귀·처리 봉투',type==='trip'?8:type==='park'?4:2,'diaper','아이 생활 정보'));if(c.feed)a.push(item('평소 수유용품',1,'feed','아이 생활 정보'));if(age(c.birth)>=6)a.push(item('평소 마시는 물 / 물병'));
 if(type!=='short')a.push(item('여벌 옷',type==='trip'?3:1));
 if(type==='park')a.push(item('돗자리'),item('모자'),item('지퍼백',2));
 if(type==='food')a.push(item('턱받이 / 앞치마'),item('아이용 식기'));
@@ -59,7 +59,23 @@ function migrate(c){if(data.migrated)return;try{const old=JSON.parse(localStorag
 function start(type,place){const c=child();const old=draft();if(old?.items.some(i=>i.checked)&&!confirm('새 외출을 시작하면 준비 중인 체크 상태가 바뀝니다. 새로 시작할까요?'))return;data.drafts[c.id]={title:place?.name||baseName(type),type,placeId:place?.id||null,createdAt:Date.now(),autoWeather:true,weather:data.weather,items:combine(place?place.items:baseItems(type,c),data.weather,c)};save();screen='list';render();window.scrollTo(0,0);}
 function bind(name,fn){document.getElementById(name)?.addEventListener('click',fn);}
 function weatherLabel(w){if(w.includes('+'))return w.split('+').map(weatherLabel).join(' · ');return {normal:'추가 없음',rain:'비',hot:'더움',cold:'추움'}[w]||'추가 없음';}
+function mergeDiaperItems(items){
+ if(!Array.isArray(items))return items;
+ const diapers=items.filter(i=>i.kind==='diaper'&&i.name==='기저귀');
+ const bags=items.filter(i=>i.kind==='diaper'&&i.name==='기저귀 처리 봉투');
+ // Leave edited or incomplete pairs alone; only migrate the original two rows.
+ if(diapers.length!==1||bags.length!==1)return items;
+ const diaper=diapers[0],bag=bags[0];
+ return items.filter(i=>i!==bag).map(i=>i===diaper?{...i,name:'기저귀·처리 봉투',checked:!!diaper.checked&&!!bag.checked}:i);
+}
+function mergeSavedDiaperItems(){
+ const lists=[...data.places,...Object.values(data.drafts),...Object.values(data.baseTemplates||{}).flatMap(templates=>Object.values(templates))];
+ let changed=false;
+ for(const list of lists){if(!list)continue;const items=mergeDiaperItems(list.items);if(items!==list.items){list.items=items;changed=true;}}
+ if(changed)save();
+}
 function render(){
+mergeSavedDiaperItems();
 const c=child();if(!c&&screen!=='profile'){screen='profile';editing=null;}
 if(screen==='profile'){renderProfile();return;}
 if(screen==='base'&&baseEdit){renderBaseEditor();return;}
